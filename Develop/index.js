@@ -4,6 +4,7 @@ const Engineer = require(`./lib/Engineer`);
 const Intern = require(`./lib/Intern`);
 const Manager = require(`./lib/Manager`);
 const generateHtml = require("./util/generateHtml");
+const fs = require("fs");
 
 const employee = []
 
@@ -49,7 +50,10 @@ function menu() {
             choices: ["Add Engineer", "Add Intern", "Finish"]
         },
 
-    ]) .then(ans =>{
+    ]) 
+
+    .then(ans =>{
+        console.log(ans)
         switch (ans.userChoice) {
             case "Add Engineer":
                 addEngineer();
@@ -60,31 +64,45 @@ function menu() {
                 break;
             
             case "Finish":
-                generateHtml(employee);
+                teamName();
                 break;
 
             default:
                 break;
         }
     })
-    
-    
     // .then(function(responseChoice) {
     //     console.log(responseChoice)
-    //     if (responseChoice === "Add Engineer") {
+    //     if (responseChoice.userChoice === "Add Engineer") {
     //         console.log("Adding Engineer!");
     //         addEngineer();
     //     };
-    //     if (responseChoice === "Add Intern") {
+    //     if (responseChoice.userChoice === "Add Intern") {
     //         console.log("Adding Intern");
     //         addIntern();
     //     };
-    //     if (responseChoice === "Finish") {
+    //     if (responseChoice.userChoice === "Finish") {
     //         console.log("generating team page!");
     //         generateHtml(employee);
     //     };
     // })
 }
+
+function teamName () {
+    inquirer.prompt([ 
+        {
+            type:'input',
+            name: 'teamName',
+            message: ' What is your Team Name?',
+        },
+    ]).then (function (response) {
+        if (response === "") {
+        return teamName();
+        }
+        fs.writeFileSync(`./output/${response.teamName}.html`, generateHtml(employee))
+        
+    })
+} 
 
 function addEngineer() {
     inquirer.prompt ([
